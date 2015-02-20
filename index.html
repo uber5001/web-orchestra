@@ -2,6 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1,width=device-width">
 <title>Web Orchestra</title>
 <script>
 	window.AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -84,16 +85,21 @@
 
 		osc.connect(gain);
 		gain.connect(comp);
-		osc.start();
+		osc.start(0);
 
 		setTimeout(function() {
 			osc.disconnect();
 			gain.disconnect();
-			osc.stop();
+			osc.stop(0);
 		}, 3000);
+	}
+	function iOSFix(target) {
+		socket.onmessage({data:0});
+		document.body.removeChild(target)
 	}
 </script>
 </head>
 <body>
+	<button onclick="iOSFix(this)">Click here if your sound isn't working.</button>
 </body>
 </html>
