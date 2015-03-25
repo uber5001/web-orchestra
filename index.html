@@ -8,6 +8,9 @@
 #output {
 	font-family: monospace;
 }
+input {
+	width: 100%;
+}
 </style>
 <script>
 	//init audio
@@ -41,9 +44,23 @@
 			var val = parseInt(message.data.note);
 			playNote(val, time);
 		}
-	}
+	};
 	
-	var calibratedDelay = 0; //will change to calibrated value soon after connection is made
+	(function(){
+		var value = 0;
+		Object.defineProperty(window, "calibratedDelay", {
+			get: function() {
+				return value;
+			},
+			set: function(val) {
+				value = val;
+				try {
+					sliderUpdate();
+				} catch (e) {
+				}
+			}
+		});	//will change to calibrated value soon after connection is made
+	})();
 	var calibrations = []; //used for calibration
 	var calibrationLimit = 10; //calibration sample count
 	function calibrate() {
@@ -161,11 +178,21 @@
 		playNote(0, 0);
 		document.body.removeChild(target)
 	}
+	
+	window.onload = function() {
+		var calibrationSlider = document.getElementById("calibrationSlider");
+		calibrationSlider.onchange = function(e) {
+			var newCal = e.target.value;
+			calibratedDelay = parseInt(newCal);
+		}
+	}
+	function sliderUpdate() {
+		calibrationSlider.value = calibratedDelay;
+	}
 </script>
 </head>
 <body>
 	<button onclick="iOSFix(this)">Click here if your sound isn't working.</button>
-	<button id="calibrateButton" onclick="calibrate()">Calibrate</button>
-	<div id="output"></div>
+	<input type="range" min="-2000" max="2000" id="calibrationSlider">
 </body>
 </html>
