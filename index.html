@@ -46,6 +46,8 @@ input {
 		}
 	};
 	
+	var personalDelay = 0;
+	
 	var calibratedDelay = 0;//will change to calibrated value soon after connection is made
 	var calibrations = []; //used for calibration
 	var calibrationLimit = 10; //calibration sample count
@@ -136,7 +138,7 @@ input {
 	}
 	function playNote(val, time) {
 		//when to play note?
-		var msInFuture = time - Date.now() + calibratedDelay;
+		var msInFuture = time - Date.now() + calibratedDelay - personalDelay;
 		var sInFuture = msInFuture/1000;
 		var playAt = context.currentTime + sInFuture;
 		if (playAt < 0) playAt = 0;
@@ -168,5 +170,13 @@ input {
 </head>
 <body>
 	<button onclick="iOSFix(this)">Click here if your sound isn't working.</button>
+	<br>
+	<label>
+		Sound Delay (0 - 1000 milliseconds)
+		<br>Desktop devices will have about 0 - 10 ms delays.
+		<br>Mobile devices will have anywhere from 0 - 500 ms delays.
+		<br>Adjust this value until your device plays as early as the earliest device.
+	</label>
+	<input value=0 type="number" id="soundDelay" min="0" max="1000" onchange="personalDelay = this.value">
 </body>
 </html>
