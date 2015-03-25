@@ -138,7 +138,7 @@ input {
 	}
 	function playNote(val, time) {
 		//when to play note?
-		var msInFuture = time - Date.now() + calibratedDelay - personalDelay;
+		var msInFuture = time - Date.now() + calibratedDelay - parseInt(personalDelay);
 		var sInFuture = msInFuture/1000;
 		var playAt = context.currentTime + sInFuture;
 		if (playAt < 0) playAt = 0;
