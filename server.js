@@ -24,7 +24,10 @@ var responses = {
 	"time": function(ws, message) {
 		ws.send(JSON.stringify({
 			type: "time",
-			data: Date.now() //time in ms
+			data: {
+				time: Date.now(), //time in ms
+				sent: message.data
+			}
 		}));
 	},
 	"note": function(ws, message) {

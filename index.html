@@ -19,10 +19,11 @@
 	//network stuffs
 	var responses = {
 		"time": function(message) {
-			calibrations.push(Date.now() - parseInt(message.data));
+			calibrations.push(Date.now()/2 + message.data.sent/2 - parseInt(message.data.time));
 			if (calibrations.length < calibrationLimit) {
 				socket.send(JSON.stringify({
-					type:'time'
+					type:'time',
+					data: Date.now()
 				}));
 			} else {
 				//calibrations collected!
@@ -47,7 +48,8 @@
 	var calibrationLimit = 10; //calibration sample count
 	function calibrate() {
 		socket.send(JSON.stringify({
-			type:'time'
+			type:'time',
+			data: Date.now()
 		}));
 	}
 	
@@ -153,7 +155,7 @@
 			osc.disconnect();
 			gain.disconnect();
 			osc.stop(0);
-		}, 3000);
+		}, 10000);
 	}
 	function iOSFix(target) {
 		playNote(0, 0);
