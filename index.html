@@ -46,21 +46,7 @@ input {
 		}
 	};
 	
-	(function(){
-		var value = 0;
-		Object.defineProperty(window, "calibratedDelay", {
-			get: function() {
-				return value;
-			},
-			set: function(val) {
-				value = val;
-				try {
-					sliderUpdate();
-				} catch (e) {
-				}
-			}
-		});	//will change to calibrated value soon after connection is made
-	})();
+	var calibratedDelay = 0;//will change to calibrated value soon after connection is made
 	var calibrations = []; //used for calibration
 	var calibrationLimit = 10; //calibration sample count
 	function calibrate() {
@@ -143,14 +129,14 @@ input {
 		socket.send(JSON.stringify({
 			type: "note",
 			data: {
-				time: Date.now() + 2000,
+				time: Date.now() + 2000 - calibratedDelay,
 				note: val
 			}
 		}));
 	}
 	function playNote(val, time) {
 		//when to play note?
-		var msInFuture = time - Date.now() - calibratedDelay;
+		var msInFuture = time - Date.now() + calibratedDelay;
 		var sInFuture = msInFuture/1000;
 		var playAt = context.currentTime + sInFuture;
 		if (playAt < 0) playAt = 0;
@@ -178,21 +164,12 @@ input {
 		playNote(0, 0);
 		document.body.removeChild(target)
 	}
-	
-	window.onload = function() {
-		var calibrationSlider = document.getElementById("calibrationSlider");
-		calibrationSlider.onchange = function(e) {
-			var newCal = e.target.value;
-			calibratedDelay = parseInt(newCal);
-		}
-	}
-	function sliderUpdate() {
-		calibrationSlider.value = calibratedDelay;
-	}
 </script>
 </head>
 <body>
 	<button onclick="iOSFix(this)">Click here if your sound isn't working.</button>
-	<input type="range" min="-2000" max="2000" id="calibrationSlider">
+	<br>
+	<label>Sound Delay (0 - 1 seconds)</label>
+	<input type="number" id="soundDelay" min="0" max="1000">
 </body>
 </html>
