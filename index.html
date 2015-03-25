@@ -4,14 +4,67 @@
 <meta charset="utf-8">
 <meta name="viewport" content="initial-scale=1,width=device-width">
 <title>Web Orchestra</title>
+<style>
+#output {
+	font-family: monospace;
+}
+</style>
 <script>
+	//init audio
 	window.AudioContext = window.AudioContext || window.webkitAudioContext;
 	var context = new AudioContext();
 	var comp = context.createDynamicsCompressor();
 	comp.connect(context.destination);
 
-	var socket = new WebSocket("ws://scottlittle.me:8082");
-
+	//network stuffs
+	var responses = {
+		"time": function(message) {
+			calibrations.push(Date.now() - parseInt(message.data));
+			if (calibrations.length < calibrationLimit) {
+				socket.send(JSON.stringify({
+					type:'time'
+				}));
+			} else {
+				//calibrations collected!
+				var avgCalibration = 0;
+				for (var i = 0; i < calibrations.length; i++) {
+					avgCalibration += calibrations[i];
+				}
+				avgCalibration /= calibrations.length;
+				//calibration calculated!
+				calibratedDelay = avgCalibration;
+			}
+		},
+		"note": function(message) {
+			var time = parseInt(message.data.time);
+			var val = parseInt(message.data.note);
+			playNote(val, time);
+		}
+	}
+	
+	var calibratedDelay = 0; //will change to calibrated value soon after connection is made
+	var calibrations = []; //used for calibration
+	var calibrationLimit = 10; //calibration sample count
+	function calibrate() {
+		socket.send(JSON.stringify({
+			type:'time'
+		}));
+	}
+	
+	var socket = new WebSocket("ws://" + location.hostname + ":8082");
+	socket.onopen = function() {
+		calibrate();
+	}
+	socket.onmessage = function(message) {
+		message = JSON.parse(message.data);
+		if (responses[message.type]) {
+			responses[message.type](message);
+		}
+	}
+	
+	
+	
+	//note stuffs
 	var keymap = {
 		49 :{x: 0, y:0, k:"1"},
 		50 :{x: 1, y:0, k:"2"},
@@ -62,30 +115,39 @@
 		190:{x: 8, y:3, k:"."},
 		191:{x: 9, y:3, k:"/"}
 	}
-	
 	window.onkeydown = function(e) {
 		var k = keymap[e.keyCode];
 		if (!k) return;
-		playNote(2*k.x-5*k.y);
+		sendNote(2*k.x-5*k.y);
 	}
-
-	function playNote(val) {
-		socket.send(val);
+	function sendNote(val) {
+		socket.send(JSON.stringify({
+			type: "note",
+			data: {
+				time: Date.now() + 2000,
+				note: val
+			}
+		}));
 	}
-	socket.onmessage = function(message) {
-		var val = parseInt(message.data);
+	function playNote(val, time) {
+		//when to play note?
+		var msInFuture = time - Date.now() - calibratedDelay;
+		var sInFuture = msInFuture/1000;
+		var playAt = context.currentTime + sInFuture;
+		if (playAt < 0) playAt = 0;
+	
 		var osc = context.createOscillator();
 		osc.frequency.value = 440*Math.pow(2, val/12);
 		var gain = context.createGain();
 
-		gain.gain.setValueAtTime(1, context.currentTime);
-		gain.gain.exponentialRampToValueAtTime(0.01, context.currentTime+1);
-		gain.gain.setValueAtTime(0, context.currentTime+1.01);
-
+		gain.gain.setValueAtTime(1, playAt);
+		gain.gain.exponentialRampToValueAtTime(0.01, playAt+1);
+		gain.gain.setValueAtTime(0, playAt+1.01);
 
 		osc.connect(gain);
 		gain.connect(comp);
-		osc.start(0);
+	
+		osc.start(playAt);
 
 		setTimeout(function() {
 			osc.disconnect();
@@ -94,12 +156,14 @@
 		}, 3000);
 	}
 	function iOSFix(target) {
-		socket.onmessage({data:0});
+		playNote(0, 0);
 		document.body.removeChild(target)
 	}
 </script>
 </head>
 <body>
 	<button onclick="iOSFix(this)">Click here if your sound isn't working.</button>
+	<button id="calibrateButton" onclick="calibrate()">Calibrate</button>
+	<div id="output"></div>
 </body>
 </html>
