@@ -6,6 +6,13 @@
 	width: 20%;
 	overflow-y: scroll;
 }
+#chord-list ul {
+	margin: 0;
+	padding: 0;
+}
+#chord-list li {
+	list-style: none;
+}
 #chord-view {
 	position: absolute;
 	left: 20%;
