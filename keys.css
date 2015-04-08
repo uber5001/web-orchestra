@@ -1,0 +1,206 @@
+.key-0, .key-1, .key-2, .key-3, .key-4, .key-5,
+.key-6, .key-7, .key-8, .key-9, .key-10, .key-11 {
+	font-size: 13px;
+	font-family: monospace;
+	display: block;
+	position: absolute;
+	box-sizing: border-box;
+}
+.key-0, .key-2, .key-4, .key-5, .key-7, .key-9, .key-11 {
+	height: 100%;
+	z-index: 0;
+	border: 1px solid #CCC;
+}
+.key-1, .key-3, .key-6, .key-8, .key-10 {
+	height: 60%;
+	z-index: 1;
+	border: 1px solid #000;
+}
+.octave--1 {
+	transform: translateX(0px);
+}
+.octave-0 {
+	transform: translateX(245px);
+}
+.octave-1 {
+	transform: translateX(490px);
+}
+.octave-2 {
+	transform: translateX(735px);
+}
+.octave-3 {
+	transform: translateX(980px);
+}
+.octave-4 {
+	transform: translateX(1225px);
+}
+.octave-5 {
+	transform: translateX(1470px);
+}
+.octave-6 {
+	transform: translateX(1715px);
+}
+.octave-7 {
+	transform: translateX(1960px);
+}
+.octave-8 {
+	transform: translateX(2205px);
+}
+.octave-9 {
+	transform: translateX(2450px);
+}
+.key-0:after {
+		content: "C\a" attr(data-octave);
+		color: black;
+		left: 0px;
+		width: 21px;
+		text-align: center;
+		position: absolute;
+}
+.key-0 {
+		background-color: white;
+		left: 0px;
+		width: 35px;
+}
+.key-1:after {
+		content: "C#\a" attr(data-octave);
+		color: white;
+		left: 0px;
+		width: 21px;
+		text-align: center;
+		position: absolute;
+}
+.key-1 {
+		background-color: black;
+		left: 21px;
+		width: 21px;
+}
+.key-2:after {
+		content: "D\a" attr(data-octave);
+		color: black;
+		left: 7px;
+		width: 21px;
+		text-align: center;
+		position: absolute;
+}
+.key-2 {
+		background-color: white;
+		left: 35px;
+		width: 35px;
+}
+.key-3:after {
+		content: "D#\a" attr(data-octave);
+		color: white;
+		left: 0px;
+		width: 21px;
+		text-align: center;
+		position: absolute;
+}
+.key-3 {
+		background-color: black;
+		left: 63px;
+		width: 21px;
+}
+.key-4:after {
+		content: "E\a" attr(data-octave);
+		color: black;
+		left: 14px;
+		width: 21px;
+		text-align: center;
+		position: absolute;
+}
+.key-4 {
+		background-color: white;
+		left: 70px;
+		width: 35px;
+}
+.key-5:after {
+		content: "F\a" attr(data-octave);
+		color: black;
+		left: 0px;
+		width: 20px;
+		text-align: center;
+		position: absolute;
+}
+.key-5 {
+		background-color: white;
+		left: 105px;
+		width: 35px;
+}
+.key-6:after {
+		content: "F#\a" attr(data-octave);
+		color: white;
+		left: 0px;
+		text-align: center;
+		position: absolute;
+}
+.key-6 {
+		background-color: black;
+		left: 125px;
+		width: 20px;
+}
+.key-7:after {
+		content: "G\a" attr(data-octave);
+		color: black;
+		left: 5px;
+		width: 20px;
+		text-align: center;
+		position: absolute;
+}
+.key-7 {
+		background-color: white;
+		left: 140px;
+		width: 35px;
+}
+.key-8:after {
+		content: "G#\a" attr(data-octave);
+		color: white;
+		left: 0px;
+		width: 20px;
+		text-align: center;
+		position: absolute;
+}
+.key-8 {
+		background-color: black;
+		left: 165px;
+		width: 20px;
+}
+.key-9:after {
+		content: "A\a" attr(data-octave);
+		color: black;
+		left: 10px;
+		width: 20px;
+		text-align: center;
+		position: absolute;
+}
+.key-9 {
+		background-color: white;
+		left: 175px;
+		width: 35px;
+}
+.key-10:after {
+		content: "A#\a" attr(data-octave);
+		color: white;
+		left: 0px;
+		width: 20px;
+		text-align: center;
+		position: absolute;
+}
+.key-10 {
+		background-color: black;
+		left: 205px;
+		width: 20px;
+}
+.key-11:after {
+		content: "B\a" attr(data-octave);
+		color: black;
+		left: 15px;
+		width: 20px;
+		text-align: center;
+		position: absolute;
+}
+.key-11 {
+		background-color: white;
+		left: 210px;
+		width: 35px;
+}

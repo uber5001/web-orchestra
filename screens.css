@@ -1,0 +1,15 @@
+body:not(.host-join-screen)        > #host-join-screen,
+body:not(.join-screen)             > #join-screen,
+body:not(.host-screen)             > #host-screen,
+body:not(.client-screen)           > #client-screen,
+body:not(.server-screen)           > #server-screen,
+body:not(.loading-screen)          > #loading-screen,
+body:not(.connection-error-screen) > #connection-error-screen {
+	display: none;
+}
+html, body, .screen {
+	margin: 0;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+}

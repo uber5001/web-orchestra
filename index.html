@@ -1,182 +1,65 @@
 <!doctype html>
 <html>
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="initial-scale=1,width=device-width">
-<title>Web Orchestra</title>
-<style>
-#output {
-	font-family: monospace;
-}
-input {
-	width: 100%;
-}
-</style>
-<script>
-	//init audio
-	window.AudioContext = window.AudioContext || window.webkitAudioContext;
-	var context = new AudioContext();
-	var comp = context.createDynamicsCompressor();
-	comp.connect(context.destination);
-
-	//network stuffs
-	var responses = {
-		"time": function(message) {
-			calibrations.push(Date.now()/2 + message.data.sent/2 - parseInt(message.data.time));
-			if (calibrations.length < calibrationLimit) {
-				socket.send(JSON.stringify({
-					type:'time',
-					data: Date.now()
-				}));
-			} else {
-				//calibrations collected!
-				var avgCalibration = 0;
-				for (var i = 0; i < calibrations.length; i++) {
-					avgCalibration += calibrations[i];
-				}
-				avgCalibration /= calibrations.length;
-				//calibration calculated!
-				calibratedDelay = avgCalibration;
-			}
-		},
-		"note": function(message) {
-			var time = parseInt(message.data.time);
-			var val = parseInt(message.data.note);
-			playNote(val, time);
+	<meta charset="utf-8">
+	<meta name="viewport" content="initial-scale=1,width=device-width">
+	<title>Web Orchestra</title>
+	<style>
+		#output {
+			font-family: monospace;
 		}
-	};
-	
-	var personalDelay = 0;
-	
-	var calibratedDelay = 0;//will change to calibrated value soon after connection is made
-	var calibrations = []; //used for calibration
-	var calibrationLimit = 10; //calibration sample count
-	function calibrate() {
-		socket.send(JSON.stringify({
-			type:'time',
-			data: Date.now()
-		}));
-	}
-	
-	var socket = new WebSocket("ws://" + location.hostname + ":8082");
-	socket.onopen = function() {
-		calibrate();
-	}
-	socket.onmessage = function(message) {
-		message = JSON.parse(message.data);
-		if (responses[message.type]) {
-			responses[message.type](message);
+		input {
+			width: 100%;
 		}
-	}
-	
-	
-	
-	//note stuffs
-	var keymap = {
-		49 :{x: 0, y:0, k:"1"},
-		50 :{x: 1, y:0, k:"2"},
-		51 :{x: 2, y:0, k:"3"},
-		52 :{x: 3, y:0, k:"4"},
-		53 :{x: 4, y:0, k:"5"},
-		54 :{x: 5, y:0, k:"6"},
-		55 :{x: 6, y:0, k:"7"},
-		56 :{x: 7, y:0, k:"8"},
-		57 :{x: 8, y:0, k:"9"},
-		48 :{x: 9, y:0, k:"0"},
-		189:{x:10, y:0, k:"-"},
-		187:{x:11, y:0, k:"="},
-
-		81 :{x: 0, y:1, k:"q"},
-		87 :{x: 1, y:1, k:"w"},
-		69 :{x: 2, y:1, k:"e"},
-		82 :{x: 3, y:1, k:"r"},
-		84 :{x: 4, y:1, k:"t"},
-		89 :{x: 5, y:1, k:"y"},
-		85 :{x: 6, y:1, k:"u"},
-		73 :{x: 7, y:1, k:"i"},
-		79 :{x: 8, y:1, k:"o"},
-		80 :{x: 9, y:1, k:"p"},
-		219:{x:10, y:1, k:"["},
-		221:{x:11, y:1, k:"]"},
-					 
-		65 :{x: 0, y:2, k:"a"},
-		83 :{x: 1, y:2, k:"s"},
-		68 :{x: 2, y:2, k:"d"},
-		70 :{x: 3, y:2, k:"f"},
-		71 :{x: 4, y:2, k:"g"},
-		72 :{x: 5, y:2, k:"h"},
-		74 :{x: 6, y:2, k:"j"},
-		75 :{x: 7, y:2, k:"k"},
-		76 :{x: 8, y:2, k:"l"},
-		186:{x: 9, y:2, k:";"},
-		222:{x:10, y:2, k:"'"},
-					  
-		90 :{x: 0, y:3, k:"z"},
-		88 :{x: 1, y:3, k:"x"},
-		67 :{x: 2, y:3, k:"c"},
-		86 :{x: 3, y:3, k:"v"},
-		66 :{x: 4, y:3, k:"b"},
-		78 :{x: 5, y:3, k:"n"},
-		77 :{x: 6, y:3, k:"m"},
-		188:{x: 7, y:3, k:","},
-		190:{x: 8, y:3, k:"."},
-		191:{x: 9, y:3, k:"/"}
-	}
-	window.onkeydown = function(e) {
-		var k = keymap[e.keyCode];
-		if (!k) return;
-		sendNote(2*k.x-5*k.y);
-	}
-	function sendNote(val) {
-		socket.send(JSON.stringify({
-			type: "note",
-			data: {
-				time: Date.now() + 2000 - calibratedDelay,
-				note: val
-			}
-		}));
-	}
-	function playNote(val, time) {
-		//when to play note?
-		var msInFuture = time - Date.now() + calibratedDelay - parseInt(personalDelay);
-		var sInFuture = msInFuture/1000;
-		var playAt = context.currentTime + sInFuture;
-		if (playAt < 0) playAt = 0;
-	
-		var osc = context.createOscillator();
-		osc.frequency.value = 440*Math.pow(2, val/12);
-		var gain = context.createGain();
-
-		gain.gain.setValueAtTime(1, playAt);
-		gain.gain.exponentialRampToValueAtTime(0.01, playAt+1);
-		gain.gain.setValueAtTime(0, playAt+1.01);
-
-		osc.connect(gain);
-		gain.connect(comp);
-	
-		osc.start(playAt);
-
-		setTimeout(function() {
-			osc.disconnect();
-			gain.disconnect();
-			osc.stop(0);
-		}, 10000);
-	}
-	function iOSFix(target) {
-		playNote(0, 0);
-		document.body.removeChild(target)
-	}
-</script>
+	</style>
+	<link rel="stylesheet" href="screens.css">
+	<link rel="stylesheet" href="keys.css">
+	<link rel="stylesheet" href="server.css">
+	<script src="network.js"></script>
+	<script src="audio.js" defer></script>
+	<script src="controllers.js" defer></script>
 </head>
-<body>
-	<button onclick="iOSFix(this)">Click here if your sound isn't working.</button>
-	<br>
-	<label>
-		Sound Delay (0 - 1000 milliseconds)
-		<br>Desktop devices will have about 0 - 10 ms delays.
-		<br>Mobile devices will have anywhere from 0 - 500 ms delays.
-		<br>Adjust this value until your device plays as early as the earliest device.
-	</label>
-	<input value=0 type="number" id="soundDelay" min="0" max="1000" onchange="personalDelay = this.value">
+<body class="loading-screen">
+	<div id="loading-screen" class="screen">
+		Connecting to server...
+	</div>
+	<div id="connection-error-screen" class="screen">
+		A connection to the server could not be established.
+	</div>
+	<div id="host-join-screen" class="screen">
+		<button id="host">Host</button>
+		<button id="join" type="button">Join</button>
+	</div>
+	<div id="join-screen" class="screen">
+		<button class="back">back</button>
+		</label>Type in the code for the server you would like to join:</label>
+		<input id="join-code" type="text">
+		<button id="join-code-submit" type="button">Use above code</button>
+	</div>
+	<div id="host-screen" class="screen">
+		<button class="back">back</button>
+		</label>Type in a code that will be used to join your server:</label>
+		<input id="host-code" type="text">
+		<button id="host-code-submit" type="button">Use above code</button>
+		<label>Or pick one at random:</label>
+		<button id="host-code-random" type="button">Use random code</button>
+	</div>
+	<div id="client-screen" class="screen">
+		<!--generated-->
+	</div>
+	<div id="server-screen" class="screen">
+		<div id="chord-list">
+			<ul>
+			</ul>
+		</div>
+		<div id="chord-view">
+			<div id="chord-preview">
+				<!--generated-->
+			</div>
+			<div id="chord-editor">
+				<!--generated-->
+			</div>
+		</div>
+	</div>
 </body>
 </html>
