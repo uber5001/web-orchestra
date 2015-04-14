@@ -1,5 +1,10 @@
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
-var context = new AudioContext();
+var context;
+try {
+	context = new AudioContext();
+} catch (e) {
+	document.write("Your browser does not support the Web Audio API");
+}
 var comp = context.createDynamicsCompressor();
 comp.connect(context.destination);
 

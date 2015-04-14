@@ -1,4 +1,5 @@
-var wss = new (require('ws').Server)({ port: 8082 });
+var WS = require('ws');
+var wss = new (WS.Server)({ port: 8082 });
 
 wss.broadcast = function broadcast(messageType, messageObject) {
 	wss.clients.forEach(function each(client) {
@@ -28,10 +29,27 @@ wss.on('connection', function connection(ws) {
 			data: messageObject
 		}));
 	};
+	
+	ws.broadcast = function(messageType, messageObject) {
+		if (this.code !== undefined)
+			for (var i = 0; i < servers[this.code].length; i++)
+				try {
+					servers[this.code][i].send(JSON.stringify({
+						type: messageType,
+						data: messageObject
+					}));
+				} catch (e) {
+					if (servers[this.code][i].readyState == WS.WebSocket.CLOSED) {
+						servers[this.code].splice(i, 1);
+					} else {
+						console.log(e);
+					}
+				}
+	};
 });
 
 var servers = {};
-
+var lastChord = {};
 //message handlers
 var responses = {
 	"host": function(message) {
@@ -43,16 +61,32 @@ var responses = {
 			this.code = message.code;
 			servers[message.code] = [this];
 			this.respond("host-success",{});
+			
+			this.onclose = function() {
+				for (var i = 0; i < servers[this.code].length; i++) {
+					servers[this.code][i].close();
+				}
+				delete servers[this.code];
+			}
 		}
 	},
 	"join": function(message) {
 		if (servers[message.code]) {
 			servers[message.code].push(this);
 			this.respond("join-success",{});
+			this.respond("chord",{notes:lastChord});
 		} else {
 			this.respond("error", {
 				message: "That code does not link to any server!"
 			});
 		}
+	},
+	"chord": function(message) {
+		if (this.code === undefined) {
+			console.log("someone is trying to hijack the server!");
+			return;
+		}
+		this.broadcast("chord", message);
+		lastChord = message.notes;
 	}
 }

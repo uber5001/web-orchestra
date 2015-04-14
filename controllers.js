@@ -15,6 +15,13 @@ function showScreen(screenName) {
 	document.body.classList.add(screenName);
 	if (screenName == "server-screen") {
 		$("#chord-editor").scrollLeft = 980;
+		
+		//start with a chord
+		$("#new-chord").click();
+		$("#note-69").click();
+		$("#note-73").click();
+		$("#note-76").click();
+		$("#note-80").click();
 	}
 }
 
@@ -58,7 +65,25 @@ $("#join-code-submit").onclick = function() {
 }
 
 //client-screen
-
+responses["chord"] = function(message) {
+	var notes = message.notes;
+	var ul = $("#client-screen ul");
+	ul.innerHTML = "";
+	for (var i = 0; i < notes.length; i++) {
+		var li = document.createElement("li");
+		var a = document.createElement("a");
+		a.innerHTML = notes[i];
+		(function() {
+			var note = notes[i];
+			a.onclick = function(e) {
+				e.preventDefault();
+				playNote(note);
+			}
+		})();
+		li.appendChild(a);
+		ul.appendChild(li);
+	}
+}
 
 //server-screen
 //chord-editor
@@ -95,25 +120,29 @@ var Keyboard = new function() {
 	var current = {};
 	this.onchange = function() {}
 	this.toggle = function(note) {
-		$("#note-" + note).classList.toggle("active");
-		if (current[note])
-			delete current[note]
-		else
+		if (current[note]) {
+			delete current[note];
+			$("#note-" + note).classList.remove("active");
+		} else {
 			current[note] = true;
+			$("#note-" + note).classList.add("active");
+		}
 		this.onchange();
 	}
 	this.getNotes = function() {
 		var notes = [];
 		for (var i in current)
-			note.push(i);
+			notes.push(i);
 		return notes;
 	}
 	this.setNotes = function(array) {
 		for (var i in current)
-			$("#note-" + i).classList.toggle("active");
-		var current = {};
-		for (var i = 0; i < array.length; i++)
-			this.toggle(array[i]) = true;
+			$("#note-" + i).classList.remove("active");
+		current = {};
+		for (var i = 0; i < array.length; i++) {
+			current[array[i]] = true;
+			$("#note-" + array[i]).classList.add("active");
+		}
 	}
 }();
 
@@ -133,10 +162,27 @@ $("#new-chord").onclick = function() {
 		e.preventDefault();
 		//show chord
 		
+		Keyboard.onchange = function() {};
+		Keyboard.setNotes(chord.notes);
+		Keyboard.onchange = function() {
+			chord.notes = Keyboard.getNotes();
+			updateServerChords();
+		}
+		
+		updateServerChords = function() {
+			respond("chord", {
+				notes: chord.notes
+			});
+		}
+		updateServerChords();
 	}
+	link.click();
 	
 	item.appendChild(link);
 	$("#chord-list ul").appendChild(item);
 }
+
+var updateServerChords = function() {}
+
 
 
