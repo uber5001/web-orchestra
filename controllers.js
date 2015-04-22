@@ -167,7 +167,7 @@ responses["chord"] = function(message) {
 			var scalar = 1;
 			var phase = 0;
 			var oldTime = Date.now();
-			canvas.onclick = function(e) {
+			canvas.onclick = canvas.ontouchstart = function(e) {
 				e.preventDefault();
 				notePlayer.play();
 			}
