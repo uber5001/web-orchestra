@@ -1,3 +1,10 @@
+
+window.onerror = function() {
+	$("#connection-error-screen").innerHTML = "";
+	$("#connection-error-screen").appendChild(document.createTextNode("Either the server closed, or something VERY unexpected occurred. If this is unexpected, please report this error:\n\n" + JSON.stringify(arguments) + "\n\n"));
+	showScreen("connection-error-screen");
+}
+
 //convenience
 var socket = new WebSocket("ws://" + location.hostname + ":8082");
 socket.onmessage = function(message) {

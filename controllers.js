@@ -343,9 +343,3 @@ for (var i = 0; i < chordColors.length; i++) {
 }
 
 var updateServerChords = function() {}
-
-window.onerror = function() {
-	$("#connection-error-screen").innerHTML = "";
-	$("#connection-error-screen").appendChild(document.createTextNode("Either the server closed, or something VERY unexpected occurred. If this is unexpected, please report this error:\n\n" + JSON.stringify(arguments) + "\n\n"));
-	showScreen("connection-error-screen");
-}
