@@ -40,7 +40,7 @@ body.server-screen #client-screen#client-screen {
 }
 
 #host-join-screen, #host-screen, #join-screen {
-	-webkit-display: flex;
+	display: -webkit-flex;
 	-webkit-flex-direction: column;
 	-webkit-justify-content: space-around;
 	-webkit-align-items: center;

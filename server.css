@@ -9,7 +9,7 @@
 	margin: 0;
 	padding: 0;
 	height: 100%;
-	-webkit-display: flex;
+	display: -webkit-flex;
 	-webkit-flex-direction: column;
 	display: flex;
 	flex-direction: column;
