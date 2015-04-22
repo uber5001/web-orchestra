@@ -8,12 +8,15 @@
 #chord-list ul {
 	margin: 0;
 	padding: 0;
-	display: flex;
 	height: 100%;
+	-webkit-display: flex;
+	-webkit-flex-direction: column;
+	display: flex;
 	flex-direction: column;
 }
 #chord-list li {
 	list-style: none;
+	-webkit-flex: 1;
 	flex: 1;
 }
 #chord-view {

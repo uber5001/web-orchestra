@@ -60,7 +60,9 @@ function playNote(val, vel) {
 	}, 10000);
 }
 
-function iOSFix(target) {
+function iOSFix() {
 	playNote(0, 0.01);
-	document.body.removeChild(target);
+	document.body.removeEventListener("click", iOSFix);
 }
+
+document.body.addEventListener("click", iOSFix);

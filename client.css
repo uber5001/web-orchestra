@@ -1,4 +1,6 @@
 .key-canvas-list {
+	-webkit-display: flex;
+	-webkit-flex-direction: column-reverse;
 	display: flex;
 	flex-direction: column-reverse;
 	margin: 0;
