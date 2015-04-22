@@ -4,14 +4,17 @@
 	top: 0px;
 	height: 100%;
 	width: 20%;
-	overflow-y: scroll;
 }
 #chord-list ul {
 	margin: 0;
 	padding: 0;
+	display: flex;
+	height: 100%;
+	flex-direction: column;
 }
 #chord-list li {
 	list-style: none;
+	flex: 1;
 }
 #chord-view {
 	position: absolute;

@@ -39,7 +39,7 @@ wss.on('connection', function connection(ws) {
 						data: messageObject
 					}));
 				} catch (e) {
-					if (servers[this.code][i].readyState == WS.WebSocket.CLOSED) {
+					if (servers[this.code][i].readyState == ws.CLOSED) {
 						servers[this.code].splice(i, 1);
 					} else {
 						console.log(e);
@@ -50,6 +50,7 @@ wss.on('connection', function connection(ws) {
 
 var servers = {};
 var lastChord = {};
+var lastColor = {};
 //message handlers
 var responses = {
 	"host": function(message) {
@@ -74,7 +75,7 @@ var responses = {
 		if (servers[message.code]) {
 			servers[message.code].push(this);
 			this.respond("join-success",{});
-			this.respond("chord",{notes:lastChord});
+			this.respond("chord",{notes:lastChord, color:lastColor});
 		} else {
 			this.respond("error", {
 				message: "That code does not link to any server!"
@@ -88,5 +89,6 @@ var responses = {
 		}
 		this.broadcast("chord", message);
 		lastChord = message.notes;
+		lastColor = message.color;
 	}
 }

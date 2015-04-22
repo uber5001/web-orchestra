@@ -1,3 +1,5 @@
+@import url(http://fonts.googleapis.com/css?family=Roboto);
+
 body:not(.host-join-screen)        > #host-join-screen,
 body:not(.join-screen)             > #join-screen,
 body:not(.host-screen)             > #host-screen,
@@ -7,13 +9,21 @@ body:not(.loading-screen)          > #loading-screen,
 body:not(.connection-error-screen) > #connection-error-screen {
 	display: none;
 }
+body {
+	font-family: 'Roboto', sans-serif;
+	background-color: black;
+	color: white;
+}
+input, button {
+	font-size: inherit;
+	font-family: inherit;
+}
 html, body, .screen {
 	margin: 0;
 	width: 100%;
 	height: 100%;
 	position: absolute;
 }
-
 body.server-screen #client-screen#client-screen {
 	display: block;
 	position: absolute;
@@ -22,4 +32,37 @@ body.server-screen #client-screen#client-screen {
 	width: 80vw;
 	height: 80vh;
 	z-index: 10;
+}
+
+.single-character-input {
+	width: 1em;
+	text-align: center;
+}
+
+#host-join-screen, #host-screen, #join-screen {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	align-items: center;
+}
+
+button, input {
+	color: white;
+	background-color: black;
+	border: .1em solid white;
+	border-radius: 15vmin;
+	font-size: 15vmin;
+	padding: .2em .6em;
+	text-align: center;
+}
+input {
+	border-radius: 0;
+	border-top-width: 0;
+	border-right-width: 0;
+	border-left-width: 0;
+}
+
+button:disabled {
+	color: #222;
+	border-color: #222;
 }

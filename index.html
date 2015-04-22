@@ -4,17 +4,10 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1,width=device-width">
 	<title>Web Orchestra</title>
-	<style>
-		#output {
-			font-family: monospace;
-		}
-		input {
-			width: 100%;
-		}
-	</style>
 	<link rel="stylesheet" href="screens.css">
 	<link rel="stylesheet" href="keys.css">
 	<link rel="stylesheet" href="server.css">
+	<link rel="stylesheet" href="client.css">
 	<script src="network.js"></script>
 	<script src="audio.js" defer></script>
 	<script src="controllers.js" defer></script>
@@ -25,27 +18,24 @@
 	</div>
 	<div id="connection-error-screen" class="screen">
 		A connection to the server could not be established.
+		You may have lost your internet connection, or the server may be closed.
 	</div>
 	<div id="host-join-screen" class="screen">
-		<button id="host">Host</button>
 		<button id="join" type="button">Join</button>
+		<button id="host">Host</button>
 	</div>
 	<div id="join-screen" class="screen">
-		<button class="back">back</button>
-		</label>Type in the code for the server you would like to join:</label>
-		<input id="join-code" type="text">
-		<button id="join-code-submit" type="button">Use above code</button>
+		<button class="back">Back</button>
+		<input id="join-code" type="text" placeholder="Code" size="4">
+		<button id="join-code-submit" type="button" disabled>Join!</button>
 	</div>
 	<div id="host-screen" class="screen">
-		<button class="back">back</button>
-		</label>Type in a code that will be used to join your server:</label>
-		<input id="host-code" type="text">
-		<button id="host-code-submit" type="button">Use above code</button>
-		<label>Or pick one at random:</label>
-		<button id="host-code-random" type="button">Use random code</button>
+		<button class="back">Back</button>
+		<input id="host-code" type="text" placeholder="Code" size="4">
+		<button id="host-code-submit" type="button" disabled>Host!</button>
 	</div>
 	<div id="client-screen" class="screen">
-		<ul>
+		<ul class="key-canvas-list">
 			<!--generated-->
 		</ul>
 	</div>
@@ -54,7 +44,6 @@
 			<ul>
 				<!--generated-->
 			</ul>
-			<button id="new-chord">New chord</button>
 		</div>
 		<div id="chord-view">
 			<div id="chord-preview">
