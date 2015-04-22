@@ -22,36 +22,47 @@
 	border: 1px solid #000;
 }
 .octave--1 {
+	-webkit-transform: translateX(0px);
 	transform: translateX(0px);
 }
 .octave-0 {
+	-webkit-transform: translateX(245px);
 	transform: translateX(245px);
 }
 .octave-1 {
+	-webkit-transform: translateX(490px);
 	transform: translateX(490px);
 }
 .octave-2 {
+	-webkit-transform: translateX(735px);
 	transform: translateX(735px);
 }
 .octave-3 {
+	-webkit-transform: translateX(980px);
 	transform: translateX(980px);
 }
 .octave-4 {
+	-webkit-transform: translateX(1225px);
 	transform: translateX(1225px);
 }
 .octave-5 {
+	-webkit-transform: translateX(1470px);
 	transform: translateX(1470px);
 }
 .octave-6 {
+	-webkit-transform: translateX(1715px);
 	transform: translateX(1715px);
 }
 .octave-7 {
+	-webkit-transform: translateX(1960px);
 	transform: translateX(1960px);
 }
 .octave-8 {
+	-webkit-transform: translateX(2205px);
 	transform: translateX(2205px);
 }
 .octave-9 {
+	-webkit-transform: translateX(2450px);
 	transform: translateX(2450px);
 }
 .key-0:after {
