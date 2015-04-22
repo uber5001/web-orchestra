@@ -17,6 +17,7 @@ function NotePlayer(val, vel) {
 	this.play = function() {
 		var osc = context.createOscillator();
 		osc.frequency.value = 440*Math.pow(2, (val-69)/12);
+		osc.type = "triangle";
 		var gain = context.createGain();
 
 		gain.gain.setValueAtTime(vel, context.currentTime);
@@ -42,6 +43,7 @@ function playNote(val, vel) {
 	}
 	var osc = context.createOscillator();
 	osc.frequency.value = 440*Math.pow(2, (val-69)/12);
+	osc.type = "triangle";
 	var gain = context.createGain();
 
 	gain.gain.setValueAtTime(vel, context.currentTime);
