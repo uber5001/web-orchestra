@@ -150,6 +150,10 @@ responses["chord"] = function(message) {
 		canvas.height = 256;
 		//a.innerHTML = notes[i];
 		(function() {
+			var note = notes[i];
+			var myCanvas = canvas;
+			var numNotes = notes.length;
+		
 			var alive = true;
 			canvas.kill = function() {
 				alive = false;
@@ -167,12 +171,16 @@ responses["chord"] = function(message) {
 				e.preventDefault();
 				notePlayer.play();
 			}
+			var clientScreen = $("#client-screen");
+			tmp = clientScreen;
 			function animate() {
+				myCanvas.width = width = clientScreen.offsetWidth
+				myCanvas.height = height = clientScreen.offsetHeight / numNotes
 				if (!alive) return;
 				var newTime = Date.now();
 				var deltaTime = newTime - oldTime;
 				oldTime = newTime;
-				phase += Math.floor(deltaTime/4);
+				phase += Math.floor(deltaTime * (0.05 + Math.pow(2,(40-note)/12)));
 				
 				requestAnimationFrame(animate);
 				notePlayer.analyser.getByteTimeDomainData(buffer);
@@ -209,13 +217,14 @@ responses["chord"] = function(message) {
 					}
 				}
 				
-				for (var i = 0; i < width; i++) {
+				for (var i = 0; i <= 200; i++) {
 					var val = buffer[i*scalar + offset + phase];
-					val = (val-128) * Math.sin(Math.PI*(i/width)) + 128;
+					val = (val-128) * Math.sin(Math.PI*(i/200)) + 128;
+					val = (val-128)/256*height + height/2
 					if (i === 0) {
-						context.moveTo(i, val);
+						context.moveTo(i/200*width, val);
 					} else {
-						context.lineTo(i, val);
+						context.lineTo(i/200*width, val);
 					}
 				}
 				context.stroke();
