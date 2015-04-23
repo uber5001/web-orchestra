@@ -7,6 +7,12 @@ window.onerror = function() {
 
 //convenience
 var socket = new WebSocket("ws://" + location.hostname + ":8082");
+socket.onclose = function() {
+	showScreen('connection-error-screen');
+}
+socket.onopen = function() {
+	setTimeout(showScreen('host-join-screen'),0);
+}
 socket.onmessage = function(message) {
 	message = JSON.parse(message.data);
 	if (responses[message.type]) {

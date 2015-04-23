@@ -23,12 +23,6 @@ function showScreen(screenName) {
 }
 
 //loading-screen
-socket.onclose = function() {
-	showScreen('connection-error-screen');
-}
-socket.onopen = function() {
-	showScreen('host-join-screen');
-}
 
 //host-join-screen
 $("#host").onclick = function() {
